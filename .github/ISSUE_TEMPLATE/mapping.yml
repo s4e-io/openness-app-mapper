@@ -1,0 +1,56 @@
+name: Application mapping
+description: A Windows application that is missing, matched to the wrong product, or has the wrong version rule
+title: "Mapping: "
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it
+      options:
+        - New application (not in the catalog)
+        - Wrong match (wrong product or CVEs)
+        - Wrong version (version read wrongly)
+    validations:
+      required: true
+  - type: input
+    id: display_name
+    attributes:
+      label: Name in Installed apps (DisplayName)
+      placeholder: "7-Zip 24.08 (x64)"
+    validations:
+      required: true
+  - type: input
+    id: publisher
+    attributes:
+      label: Publisher
+      placeholder: "Igor Pavlov"
+  - type: input
+    id: display_version
+    attributes:
+      label: Version shown (DisplayVersion)
+      placeholder: "24.08"
+  - type: input
+    id: cpe
+    attributes:
+      label: NVD product (vendor:product), if you know it
+      placeholder: "7-zip:7-zip"
+  - type: textarea
+    id: entry
+    attributes:
+      label: Proposed catalog entry (optional)
+      description: Same format as the entries in app-mapper.json.gz. "verify" is optional.
+      render: json
+      value: |
+        {
+          "id": "Vendor.Product",
+          "name": "Product",
+          "match": {"name": "^Product\\b", "publisher": "Vendor", "not_name": ""},
+          "version": {"from": "display_version", "regex": "([0-9.]+)", "parts": 3},
+          "cpe": ["vendor:product"],
+          "update": "winget upgrade --id Vendor.Product"
+        }
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Links, the wrong CVE, a screenshot. No host names or IP addresses.
